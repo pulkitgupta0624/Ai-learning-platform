@@ -8,6 +8,7 @@ const pageTitles = {
     '/dashboard': 'Dashboard',
     '/documents': 'My Documents',
     '/flashcards': 'Flashcards',
+    '/quizzes': 'Quizzes',
     '/profile': 'Profile',
 };
 

@@ -1,5 +1,22 @@
 import Quiz from "../models/Quiz.js";
 
+export const getAllQuizzes = async (req, res, next) => {
+    try {
+        const quizzes = await Quiz.find({ userId: req.user._id })
+            .populate('documentId', 'title fileName')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            count: quizzes.length,
+            data: quizzes,
+            message: 'All quizzes fetched successfully'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const getQuizzes = async (req, res, next) => {
     try {
         const quizzes = await Quiz.find({
@@ -123,6 +140,45 @@ export const submitQuiz = async (req, res, next) => {
         })
     } catch (error) {
         next(error)
+    }
+}
+
+export const retakeQuiz = async (req, res, next) => {
+    try {
+        const quiz = await Quiz.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!quiz) {
+            return res.status(404).json({
+                success: false,
+                error: 'Quiz not found',
+                statusCode: 404
+            })
+        }
+
+        if (!quiz.completedAt) {
+            return res.status(400).json({
+                success: false,
+                error: 'Quiz has not been completed yet',
+                statusCode: 400
+            })
+        }
+
+        quiz.userAnswers = [];
+        quiz.score = 0;
+        quiz.completedAt = null;
+
+        await quiz.save();
+
+        res.status(200).json({
+            success: true,
+            data: quiz,
+            message: 'Quiz reset for retake successfully'
+        })
+    } catch (error) {
+        next(error);
     }
 }
 

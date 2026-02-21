@@ -13,6 +13,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import ProfilePage from './pages/Profile/ProfilePage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import { useAuth } from './context/AuthContext'
+import QuizListPage from './pages/Quizzes/QuizListPage'
 
 const App = () => {
     const { isAuthenticated, loading } = useAuth();
@@ -41,6 +42,7 @@ const App = () => {
                     <Route path="/documents/:id" element={<DocumentDetailPage />} />
                     <Route path="/flashcards" element={<FlashcardListPage />} />
                     <Route path="/documents/:id/flashcards" element={<FlashcardPage />} />
+                    <Route path="/quizzes" element={<QuizListPage />} />
                     <Route path="/quizzes/:quizId" element={<QuizTakePage />} />
                     <Route path="/quizzes/:quizId/results" element={<QuizResultPage />} />
                     <Route path="/profile" element={<ProfilePage />} />

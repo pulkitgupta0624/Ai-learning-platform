@@ -4,7 +4,6 @@ import Quiz from "../models/Quiz.js";
 import ChatHistory from "../models/ChatHistory.js";
 import * as geminiService from "../utils/geminiService.js";
 import { findRelevantChunks } from "../utils/textChunker.js";
-import { nextTick } from "process";
 
 export const generateFlashcards = async (req, res, next) => {
     try {
@@ -293,8 +292,8 @@ export const getChatHistory = async (req, res, next) => {
         }).select("messages");
 
         if (!chatHistory) {
-            return res.status(404).json({
-                success: false,
+            return res.status(200).json({
+                success: true,
                 data: [],
                 message: 'Chat history not found'
             })

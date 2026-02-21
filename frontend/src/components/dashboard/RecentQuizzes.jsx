@@ -10,7 +10,10 @@ const RecentQuizzes = ({ quizzes = [] }) => {
         <div className="bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
                 <h3 className="font-bold text-gray-800">Recent Quizzes</h3>
-                <button className="text-xs font-semibold text-orange-500 hover:text-orange-600 flex items-center gap-1 transition-colors">
+                <button
+                    onClick={() => navigate('/quizzes')}
+                    className="text-xs font-semibold text-orange-500 hover:text-orange-600 flex items-center gap-1 transition-colors"
+                >
                     View all <ArrowRight size={12} />
                 </button>
             </div>
@@ -20,7 +23,7 @@ const RecentQuizzes = ({ quizzes = [] }) => {
                 ) : quizzes.map((quiz) => (
                     <div
                         key={quiz._id}
-                        onClick={() => navigate(`/quizzes/${quiz._id}`)}
+                        onClick={() => navigate(quiz.completedAt ? `/quizzes/${quiz._id}/results` : `/quizzes/${quiz._id}`)}
                         className="flex items-center gap-3 px-5 py-3.5 hover:bg-purple-50/30 cursor-pointer transition-colors"
                     >
                         <div className="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center shrink-0">

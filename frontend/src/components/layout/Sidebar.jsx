@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
-    LayoutDashboard, FileText, BookOpen, User,
+    LayoutDashboard, FileText, BookOpen, Brain, User,
     LogOut, ChevronLeft, ChevronRight, GraduationCap, X
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
@@ -11,6 +11,7 @@ const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/documents', icon: FileText, label: 'Documents' },
     { path: '/flashcards', icon: BookOpen, label: 'Flashcards' },
+    { path: '/quizzes', icon: Brain, label: 'Quizzes' },
     { path: '/profile', icon: User, label: 'Profile' },
 ];
 

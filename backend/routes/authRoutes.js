@@ -8,6 +8,7 @@ import {
 } from '../controllers/authController.js';
 import protect from '../middleware/auth.js';
 import { body } from 'express-validator';
+import { validationResult } from 'express-validator';
 
 const router = express.Router();
 
@@ -37,8 +38,16 @@ const loginValidation = [
         .withMessage('Password is required'),   
 ]
 
-router.post('/register', registerValidation, register);
-router.post('/login', loginValidation, login);
+const handleValidation = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+};
+
+router.post('/register', registerValidation, handleValidation, register);
+router.post('/login', loginValidation, handleValidation, login);
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 router.post('/change-password', protect, changePassword);

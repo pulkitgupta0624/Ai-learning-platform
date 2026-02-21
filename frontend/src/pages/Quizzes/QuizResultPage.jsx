@@ -12,6 +12,7 @@ const QuizResultPage = () => {
     const navigate = useNavigate();
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [retaking, setRetaking] = useState(false);
 
     useEffect(() => {
         const fetch = async () => {
@@ -22,10 +23,23 @@ const QuizResultPage = () => {
         fetch();
     }, [quizId]);
 
+    const handleRetake = async () => {
+        setRetaking(true);
+        try {
+            await quizService.retakeQuiz(quizId);
+            toast.success('Quiz reset! Good luck!');
+            navigate(`/quizzes/${quizId}`, { replace: true });
+        } catch (err) {
+            toast.error(err.error || 'Failed to reset quiz');
+        } finally {
+            setRetaking(false);
+        }
+    };
+
     if (loading) return <div className="flex items-center justify-center h-64"><Spinner size="lg" /></div>;
     if (!results) return null;
 
-    const score = results.score;
+    const score = results.quiz?.score ?? results.score;
 
     return (
         <div className="flex flex-col gap-5 md:gap-6 max-w-3xl mx-auto">
@@ -44,7 +58,14 @@ const QuizResultPage = () => {
                     {score >= 80 ? 'Excellent work!' : score >= 60 ? 'Good effort!' : 'Keep practicing!'}
                 </p>
                 <div className="flex gap-3 justify-center mt-5 flex-wrap">
-                    <Button variant="secondary" icon={RotateCcw} onClick={() => navigate(`/quizzes/${quizId}`)}>Retake Quiz</Button>
+                    <Button
+                        variant="secondary"
+                        icon={RotateCcw}
+                        onClick={handleRetake}
+                        loading={retaking}
+                    >
+                        Retake Quiz
+                    </Button>
                     <Button icon={BookOpen} onClick={() => navigate('/documents')}>Study More</Button>
                 </div>
             </div>

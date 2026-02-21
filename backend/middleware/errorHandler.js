@@ -22,7 +22,7 @@ const errorHandler = (err, req, res, next) => {
     }
 
     // Multer file size error
-    if (err.code === 'LIMI_FILE_SIZE') {
+    if (err.code === 'LIMIT_FILE_SIZE') {
         message = 'File size is too large. Maximum limit is 10 MB';
         statusCode = 400;
     }

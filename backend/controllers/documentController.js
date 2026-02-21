@@ -50,9 +50,10 @@ export const uploadDocument = async (req, res, next) => {
             message: 'Document uploaded successfully. Processing is progress...'
         })
     } catch (error) {
-        if (!req.file) {
+        if (req.file) {
             await fs.unlink(req.file.path).catch(err => console.log(err));
         }
+        next(error);
     }
 }
 
@@ -144,7 +145,7 @@ export const getDocument = async (req, res, next) => {
             userId: req.user._id
         });
 
-        if(!document) {
+        if (!document) {
             return res.status(404).json({
                 success: false,
                 error: 'Document not found',
@@ -152,15 +153,8 @@ export const getDocument = async (req, res, next) => {
             })
         }
 
-        const flashcardCount = await Flashcard.find({ 
-            documentId: document._id,
-            userId: req.user._id
-        });
-
-        const quizCount = await Quiz.find({ 
-            documentId: document._id ,
-            userId: req.user._id
-        });
+        const flashcardCount = await Flashcard.countDocuments({ documentId: document._id, userId: req.user._id });
+        const quizCount = await Quiz.countDocuments({ documentId: document._id, userId: req.user._id });
 
         document.lastAccessed = Date.now();
         await document.save();
@@ -171,7 +165,7 @@ export const getDocument = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            data: document
+            data: documentData
         })
     } catch (error) {
         next(error)
@@ -185,7 +179,7 @@ export const deleteDocument = async (req, res, next) => {
             userId: req.user._id
         });
 
-        if(!document) {
+        if (!document) {
             return res.status(404).json({
                 success: false,
                 error: 'Document not found',
@@ -193,7 +187,8 @@ export const deleteDocument = async (req, res, next) => {
             })
         }
 
-        await fs.unlink(document.filePath).catch(err => console.log(err));
+        const actualPath = path.join(__dirname, '..', 'uploads', 'documents', path.basename(document.filePath));
+        await fs.unlink(actualPath).catch(err => console.log(err));
 
         await document.deleteOne();
 

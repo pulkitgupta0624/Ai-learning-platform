@@ -79,6 +79,25 @@ const useQuiz = (documentId = null) => {
         }
     };
 
+    const retakeQuiz = async (quizId) => {
+        try {
+            const res = await quizService.retakeQuiz(quizId);
+            // Update local quiz status — mark as not completed
+            setQuizzes(prev =>
+                prev.map(q =>
+                    q._id === quizId
+                        ? { ...q, score: 0, completedAt: null, userAnswers: [] }
+                        : q
+                )
+            );
+            toast.success('Quiz reset! Good luck!');
+            return res.data;
+        } catch (err) {
+            toast.error(err.error || 'Failed to reset quiz');
+            throw err;
+        }
+    };
+
     const getQuizResults = async (quizId) => {
         try {
             const res = await quizService.getQuizResults(quizId);
@@ -124,6 +143,7 @@ const useQuiz = (documentId = null) => {
         generateQuiz,
         getQuizById,
         submitQuiz,
+        retakeQuiz,
         getQuizResults,
         deleteQuiz,
     };

@@ -13,7 +13,7 @@ const protect = async(req, res, next) => {
             req.user = await User.findById(decoded.id).select('-password')
 
             if(!req.user) {
-                res.status(401).json({
+                return res.status(401).json({
                     success: false,
                     error: 'User not found',
                     statusCode: 401
