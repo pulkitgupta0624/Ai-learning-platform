@@ -1,0 +1,30 @@
+import React from 'react'
+import Modal from './Modal'
+import Button from './Button'
+import { AlertTriangle } from 'lucide-react'
+
+const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Delete', loading = false }) => {
+    return (
+        <Modal isOpen={isOpen} onClose={onClose} title="" size="sm">
+            <div className="flex flex-col items-center text-center gap-4">
+                <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center">
+                    <AlertTriangle size={28} className="text-red-500" />
+                </div>
+                <div>
+                    <h3 className="text-lg font-bold text-gray-800 mb-1">{title}</h3>
+                    <p className="text-sm text-gray-500">{message}</p>
+                </div>
+                <div className="flex gap-3 w-full">
+                    <Button variant="secondary" onClick={onClose} fullWidth disabled={loading}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={onConfirm} fullWidth loading={loading}>
+                        {confirmText}
+                    </Button>
+                </div>
+            </div>
+        </Modal>
+    );
+};
+
+export default ConfirmDialog;
