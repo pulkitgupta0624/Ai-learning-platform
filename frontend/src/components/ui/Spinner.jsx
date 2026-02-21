@@ -5,11 +5,11 @@ const Spinner = ({ size = 'md', color = 'primary' }) => {
     const colors = {
         primary: 'border-orange-500',
         white: 'border-white',
-        gray: 'border-gray-500'
+        gray: 'border-gray-400'
     };
 
     return (
-        <div className={`${sizes[size]} border-2 ${colors[color]} border-t-transparent rounded-full animate-spin`} />
+        <div className={`${sizes[size]} border-[2.5px] ${colors[color]} border-t-transparent rounded-full animate-spin`} />
     );
 };
 

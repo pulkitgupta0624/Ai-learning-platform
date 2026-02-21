@@ -14,21 +14,14 @@ const ChatWindow = ({ documentId }) => {
 
     useEffect(() => {
         const loadHistory = async () => {
-            try {
-                const res = await aiService.getChatHistory(documentId);
-                setMessages(res.data || []);
-            } catch {
-                setMessages([]);
-            } finally {
-                setLoadingHistory(false);
-            }
+            try { const res = await aiService.getChatHistory(documentId); setMessages(res.data || []); }
+            catch { setMessages([]); }
+            finally { setLoadingHistory(false); }
         };
         loadHistory();
     }, [documentId]);
 
-    useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+    useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
     const handleSend = async (question) => {
         const userMsg = { role: 'user', content: question, timestamp: new Date() };
@@ -36,43 +29,34 @@ const ChatWindow = ({ documentId }) => {
         setSending(true);
         try {
             const res = await aiService.chat(documentId, question);
-            const aiMsg = { role: 'assistant', content: res.data.response, timestamp: new Date() };
-            setMessages(prev => [...prev, aiMsg]);
-        } catch {
-            toast.error('Failed to get response');
-            setMessages(prev => prev.slice(0, -1));
-        } finally {
-            setSending(false);
-        }
+            setMessages(prev => [...prev, { role: 'assistant', content: res.data.response, timestamp: new Date() }]);
+        } catch { toast.error('Failed to get response'); setMessages(prev => prev.slice(0, -1)); }
+        finally { setSending(false); }
     };
 
-    if (loadingHistory) {
-        return <div className="flex items-center justify-center h-64"><Spinner /></div>;
-    }
+    if (loadingHistory) return <div className="flex items-center justify-center h-64"><Spinner /></div>;
 
     return (
-        <div className="flex flex-col h-125 bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="flex flex-col h-125 md:h-137.5 bg-gray-50/50 rounded-2xl border border-gray-100/80 overflow-hidden shadow-sm">
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
                 {messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center gap-3">
-                        <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center">
+                    <div className="flex flex-col items-center justify-center h-full text-center gap-3 animate-fade-in">
+                        <div className="w-16 h-16 bg-linear-to-br from-orange-50 to-amber-50 rounded-2xl flex items-center justify-center">
                             <MessageCircle size={28} className="text-orange-400" />
                         </div>
                         <div>
-                            <p className="font-semibold text-gray-700">Chat with your document</p>
+                            <p className="font-bold text-gray-700">Chat with your document</p>
                             <p className="text-sm text-gray-400 mt-1">Ask any question about the content</p>
                         </div>
                     </div>
-                ) : (
-                    messages.map((msg, i) => <ChatMessage key={i} message={msg} />)
-                )}
+                ) : messages.map((msg, i) => <ChatMessage key={i} message={msg} />)}
                 {sending && (
                     <div className="flex gap-3">
                         <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                             <Spinner size="sm" color="white" />
                         </div>
-                        <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
-                            <div className="flex gap-1">
+                        <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                            <div className="flex gap-1.5">
                                 <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                                 <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                                 <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
